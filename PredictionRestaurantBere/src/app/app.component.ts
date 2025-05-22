@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf, KeyValuePipe } from '@angular/common';
+import {NgFor, NgIf, KeyValuePipe} from '@angular/common';
 import { ApiService } from './api.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class AppComponent {
   predictions: any = null;
   clima: string = '';
   nombreDia: string = '';
+  imgPath = 'https://iili.io/3Q4dEDG.png';
 
   constructor(private apiService: ApiService) {}
 
