@@ -1,50 +1,63 @@
 <router-outlet>
-  <div style="position: relative; text-align: center;">
-    <img [src]="imgPath" alt="Cabecera" style="width: 100%; height: 350px;">
-
-  </div>
-  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
-    <span style="color: yellow;">Datos Predictivos</span> Doña Bere
-  </div>
-<div class="container">
-  <h1 class="title">Predicción de Platos</h1>
-
-  <div class="form-container">
-    <div class="form-group">
-      <label for="clima">Clima:</label>
-      <select id="clima" [(ngModel)]="clima" name="clima">
-        <option value="" disabled selected>Seleccione el clima</option>
-        <option *ngFor="let option of climaOptions" [value]="option">{{ option }}</option>
-      </select>
+  <div class="container-fluid p-0">
+    <div class="position-relative text-center">
+      <img [src]="imgPath" alt="Cabecera" class="img-fluid w-100" style="height: 350px; object-fit: cover;">
+      <div class="position-absolute top-50 start-50 translate-middle">
+        <h1 class="titulo display-4 text-white fw-bold">
+          <span class="text">Datos Predictivos Doña Bere</span>
+        </h1>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="dia">Día:</label>
-      <select id="dia" [(ngModel)]="nombreDia" name="dia">
-        <option value="" disabled selected>Seleccione el día</option>
-        <option *ngFor="let option of diaOptions" [value]="option">{{ option }}</option>
-      </select>
+    <div class="container my-5">
+      <h2 class="text-center mb-4">Predicción de Platos</h2>
+
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card shadow">
+            <div class="card-body">
+              <form (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                  <label for="clima" class="form-label">Clima:</label>
+                  <select id="clima" [(ngModel)]="clima" name="clima" class="form-select" required>
+                    <option value="" disabled selected>Seleccione el clima</option>
+                    <option *ngFor="let option of climaOptions" [value]="option">{{ option }}</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="dia" class="form-label">Día:</label>
+                  <select id="dia" [(ngModel)]="nombreDia" name="dia" class="form-select" required>
+                    <option value="" disabled selected>Seleccione el día</option>
+                    <option *ngFor="let option of diaOptions" [value]="option">{{ option }}</option>
+                  </select>
+                </div>
+
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="finDeSemana" [(ngModel)]="esFinDeSemana" name="finDeSemana">
+                  <label class="form-check-label" for="finDeSemana">¿Fin de semana?</label>
+                </div>
+
+                <button type="submit" class="btn botonpre w-100">Predecir</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="predictions" class="mt-5">
+        <h3 class="text-center mb-3">Predicciones:</h3>
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <ul class="list-group">
+              <li *ngFor="let item of predictions | keyvalue : keepOriginalOrder" class="list-group-item d-flex justify-content-between align-items-center" [class.bg-info]="item.key === 'total_platos'">
+                <strong>{{ item.key }}:</strong>
+                <span class="badge bg-primary rounded-pill">{{ item.value }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="form-group checkbox">
-      <label>
-        <input type="checkbox" [(ngModel)]="esFinDeSemana" name="finDeSemana">
-        ¿Fin de semana?
-      </label>
-    </div>
-
-    <button (click)="onSubmit()" class="submit-btn">Predecir</button>
   </div>
-
-  <div *ngIf="predictions" class="predictions">
-    <h2>Predicciones:</h2>
-    <ul>
-      <li *ngFor="let item of predictions | keyvalue">
-        <strong>{{ item.key }}:</strong> {{ item.value }}
-      </li>
-    </ul>
-  </div>
-</div>
-
-
 </router-outlet>
