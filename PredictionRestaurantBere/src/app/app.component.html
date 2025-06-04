@@ -10,40 +10,45 @@
     </div>
 
     <div class="container my-5">
-      <h2 class="text-center mb-4">Predicción de Platos</h2>
+    <h2 class="text-center mb-4">Predicción de Platos</h2>
 
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card shadow">
-            <div class="card-body">
-              <form (ngSubmit)="onSubmit()">
-                <div class="mb-3">
-                  <label for="clima" class="form-label">Clima:</label>
-                  <select id="clima" [(ngModel)]="clima" name="clima" class="form-select" required>
-                    <option value="" disabled selected>Seleccione el clima</option>
-                    <option *ngFor="let option of climaOptions" [value]="option">{{ option }}</option>
-                  </select>
-                </div>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-body">
+            <form (ngSubmit)="onSubmit()">
+              <div class="mb-3">
+                <label for="clima" class="form-label">Clima:</label>
+                <select id="clima" [(ngModel)]="clima" name="clima" class="form-select" required>
+                  <option value="" disabled selected>Seleccione el clima</option>
+                  <option *ngFor="let option of climaOptions" [value]="option">{{ option }}</option>
+                </select>
+              </div>
 
-                <div class="mb-3">
-                  <label for="dia" class="form-label">Día:</label>
-                  <select id="dia" [(ngModel)]="nombreDia" name="dia" class="form-select" required>
-                    <option value="" disabled selected>Seleccione el día</option>
-                    <option *ngFor="let option of diaOptions" [value]="option">{{ option }}</option>
-                  </select>
-                </div>
+              <div class="mb-3">
+                <label for="dia" class="form-label">Día:</label>
+                <select id="dia" [(ngModel)]="nombreDia" name="dia" class="form-select" required>
+                  <option value="" disabled selected>Seleccione el día</option>
+                  <option *ngFor="let option of diaOptions" [value]="option">{{ option }}</option>
+                </select>
+              </div>
 
-                <div class="mb-3 form-check">
-                  <input type="checkbox" class="form-check-input" id="finDeSemana" [(ngModel)]="esFinDeSemana" name="finDeSemana">
-                  <label class="form-check-label" for="finDeSemana">¿Fin de semana?</label>
-                </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="finDeSemana" [(ngModel)]="esFinDeSemana" name="finDeSemana">
+                <label class="form-check-label" for="finDeSemana">¿Fin de semana?</label>
+              </div>
 
-                <button type="submit" class="btn botonpre w-100">Predecir</button>
-              </form>
-            </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="esFeriado" [(ngModel)]="esFeriado" name="esFeriado">
+                <label class="form-check-label" for="esFeriado">¿Es feriado?</label>
+              </div>
+
+              <button type="submit" class="btn botonpre w-100">Predecir</button>
+            </form>
           </div>
         </div>
       </div>
+    </div>
 
       <div *ngIf="predictions" class="mt-5">
         <h3 class="text-center mb-3">Predicciones:</h3>

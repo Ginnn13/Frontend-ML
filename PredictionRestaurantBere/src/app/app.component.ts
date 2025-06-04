@@ -16,14 +16,35 @@ export class AppComponent {
   climaOptions = ['Soleado', 'Lluvioso', 'Ventoso', 'Nublado'];
   diaOptions = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
   esFinDeSemana = false;
+  esFeriado = false;
   predictions: any = null;
   clima: string = '';
   nombreDia: string = '';
   imgPath = 'https://iili.io/3Q4dEDG.png';
-  
+
+  // Mapeo de días en español a inglés
+  private diaMapping: { [key: string]: string } = {
+    'Lunes': 'Monday',
+    'Martes': 'Tuesday',
+    'Miércoles': 'Wednesday',
+    'Jueves': 'Thursday',
+    'Viernes': 'Friday',
+    'Sábado': 'Saturday',
+    'Domingo': 'Sunday'
+  };
+
+  // Mapeo de clima para asegurar la capitalización
+  private climaMapping: { [key: string]: string } = {
+    'Soleado': 'Soleado',
+    'Lluvioso': 'Lluvioso',
+    'Ventoso': 'Ventoso',
+    'Nublado': 'Nublado'
+  };
+
   constructor(private apiService: ApiService) {}
-  
+
   keepOriginalOrder = (a: any, b: any) => 0;
+
   onSubmit() {
     console.log('onSubmit called');
 
@@ -33,10 +54,15 @@ export class AppComponent {
       return;
     }
 
+    // Mapear los valores del formulario al formato esperado por el backend
+    const mappedDia = this.diaMapping[this.nombreDia];
+    const mappedClima = this.climaMapping[this.clima];
+
     const data = {
-      clima: this.clima.toLowerCase(), // Convertir a minúsculas
-      nombre_dia: this.nombreDia.toLowerCase(), // Convertir a minúsculas
-      es_fin_de_semana: this.esFinDeSemana ? 1 : 0 // Convertir booleano a entero
+      clima: mappedClima, // Enviar con capitalización correcta
+      nombre_dia: mappedDia, // Enviar en inglés
+      es_fin_de_semana: this.esFinDeSemana ? 1 : 0, // Convertir booleano a entero
+      es_feriado: this.esFeriado ? 1 : 0
     };
 
     console.log('Data being sent:', data);
