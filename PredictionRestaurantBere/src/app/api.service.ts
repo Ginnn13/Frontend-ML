@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'https://e321-34-59-193-20.ngrok-free.app/predict'; //URL de ngrok
+  private apiUrl = 'https://291b-34-145-117-28.ngrok-free.app/predict'; //URL de ngrok
 
   constructor(private http: HttpClient) {}
   

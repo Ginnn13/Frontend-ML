@@ -27,14 +27,16 @@
 
               <div class="mb-3">
                 <label for="dia" class="form-label">Día:</label>
-                <select id="dia" [(ngModel)]="nombreDia" name="dia" class="form-select" required>
+                <select id="dia" [(ngModel)]="nombreDia" name="dia" class="form-select" required (ngModelChange)="actualizarFinDeSemana()">
                   <option value="" disabled selected>Seleccione el día</option>
                   <option *ngFor="let option of diaOptions" [value]="option">{{ option }}</option>
                 </select>
               </div>
 
               <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="finDeSemana" [(ngModel)]="esFinDeSemana" name="finDeSemana">
+                <input type="checkbox" class="form-check-input" id="finDeSemana" [(ngModel)]="esFinDeSemana"
+                [disabled]="true"
+                name="finDeSemana">
                 <label class="form-check-label" for="finDeSemana">¿Fin de semana?</label>
               </div>
 

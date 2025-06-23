@@ -22,6 +22,18 @@ export class AppComponent {
   nombreDia: string = '';
   imgPath = 'https://iili.io/3Q4dEDG.png';
 
+  ngOnChanges() {
+    this.actualizarFinDeSemana();
+  }
+
+  actualizarFinDeSemana() {
+    if (this.nombreDia === 'Sábado' || this.nombreDia === 'Domingo') {
+      this.esFinDeSemana = true;
+    } else {
+      this.esFinDeSemana = false;
+    }
+  }
+
   // Mapeo de días en español a inglés
   private diaMapping: { [key: string]: string } = {
     'Lunes': 'Monday',

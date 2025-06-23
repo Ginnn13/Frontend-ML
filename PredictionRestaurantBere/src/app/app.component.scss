@@ -41,3 +41,8 @@ h1 {
 .botonpre:hover {
   background-color: rgb(177, 115, 15);
 }
+
+input.form-check-input:disabled + .form-check-label {
+  color: black;
+  opacity: 1;
+}
