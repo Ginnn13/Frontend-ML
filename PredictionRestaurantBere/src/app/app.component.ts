@@ -1,3 +1,5 @@
+// src/app/app.component.ts
+
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,82 +14,109 @@ import { ApiService } from './api.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  // --- Propiedades existentes ---
   title = 'PredictionRestaurantBere';
   climaOptions = ['Soleado', 'Lluvioso', 'Ventoso', 'Nublado'];
   diaOptions = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
   esFinDeSemana = false;
   esFeriado = false;
-  predictions: any = null;
   clima: string = '';
   nombreDia: string = '';
   imgPath = 'https://iili.io/3Q4dEDG.png';
+  
+  // --- PROPIEDADES NUEVAS Y ACTUALIZADAS ---
+  // Usamos un tipo más específico para evitar errores de compilación con keyvalue
+  predictions: { [key: string]: any } | null = null; 
+  predictionGroupId: string | null = null; // Guardará el ID del grupo para el feedback
+  feedbackGiven = false; // Controla si se muestra el form de feedback o el mensaje de gracias
+  // Este objeto guardará las cantidades reales que el usuario introduce
+  observedSales: { [key: string]: number | null } = {};
 
-  ngOnChanges() {
-    this.actualizarFinDeSemana();
-  }
-
-  actualizarFinDeSemana() {
-    if (this.nombreDia === 'Sábado' || this.nombreDia === 'Domingo') {
-      this.esFinDeSemana = true;
-    } else {
-      this.esFinDeSemana = false;
-    }
-  }
-
-  // Mapeo de días en español a inglés
+  // Mapeo de días en español a formato del backend
   private diaMapping: { [key: string]: string } = {
-    'Lunes': 'Monday',
-    'Martes': 'Tuesday',
-    'Miércoles': 'Wednesday',
-    'Jueves': 'Thursday',
-    'Viernes': 'Friday',
-    'Sábado': 'Saturday',
-    'Domingo': 'Sunday'
+    'Lunes': 'monday', 'Martes': 'tuesday', 'Miércoles': 'wednesday',
+    'Jueves': 'thursday', 'Viernes': 'friday', 'Sábado': 'saturday', 'Domingo': 'sunday'
   };
 
-  // Mapeo de clima para asegurar la capitalización
+  // Mapeo de clima a formato del backend
   private climaMapping: { [key: string]: string } = {
-    'Soleado': 'Soleado',
-    'Lluvioso': 'Lluvioso',
-    'Ventoso': 'Ventoso',
-    'Nublado': 'Nublado'
+    'Soleado': 'sunny', 'Lluvioso': 'rainy', 'Ventoso': 'windy', 'Nublado': 'cloudy'
   };
 
   constructor(private apiService: ApiService) {}
 
   keepOriginalOrder = (a: any, b: any) => 0;
 
-  onSubmit() {
-    console.log('onSubmit called');
+  actualizarFinDeSemana() {
+    this.esFinDeSemana = this.nombreDia === 'Sábado' || this.nombreDia === 'Domingo';
+  }
 
-    // Validar que los campos no estén vacíos
+  onSubmit() {
     if (!this.clima || !this.nombreDia) {
       alert('Por favor, seleccione un clima y un día.');
       return;
     }
 
-    // Mapear los valores del formulario al formato esperado por el backend
-    const mappedDia = this.diaMapping[this.nombreDia];
-    const mappedClima = this.climaMapping[this.clima];
-
     const data = {
-      clima: mappedClima, // Enviar con capitalización correcta
-      nombre_dia: mappedDia, // Enviar en inglés
-      es_fin_de_semana: this.esFinDeSemana ? 1 : 0, // Convertir booleano a entero
+      clima: this.climaMapping[this.clima],
+      nombre_dia: this.diaMapping[this.nombreDia],
+      es_fin_de_semana: this.esFinDeSemana ? 1 : 0,
       es_feriado: this.esFeriado ? 1 : 0
     };
-
-    console.log('Data being sent:', data);
 
     this.apiService.Predictions(data).subscribe(
       (response) => {
         console.log('API response:', response);
         this.predictions = response;
-        console.log('Predictions after assignment:', this.predictions);
+        // Guardamos el ID del grupo que viene del backend
+        this.predictionGroupId = response.prediction_group_id; 
+        this.observedSales = {}; // Limpiamos las ventas observadas anteriores
+        this.feedbackGiven = false; // Mostramos el formulario de feedback de nuevo
       },
       (error) => {
         console.error('Error al obtener predicciones:', error);
         alert('Error al conectar con el backend. Verifica la URL de ngrok o el estado del servidor.');
+      }
+    );
+  }
+
+  // ---- NUEVA FUNCIÓN PARA ENVIAR EL FEEDBACK ----
+  submitFeedback() {
+    if (!this.predictionGroupId) {
+      alert('No hay un ID de predicción para enviar el feedback.');
+      return;
+    }
+
+    // Limpiar el objeto de ventas: solo enviar los platos que el usuario rellenó
+    const cleanObservedSales: { [key: string]: number } = {};
+    for (const plato in this.observedSales) {
+      const cantidad = this.observedSales[plato];
+      // Solo incluimos si el usuario ha introducido un número (no es nulo ni indefinido)
+      if (cantidad !== null && cantidad !== undefined) {
+        cleanObservedSales[plato] = Number(cantidad);
+      }
+    }
+
+    if (Object.keys(cleanObservedSales).length === 0) {
+        alert('Por favor, introduce la venta real de al menos un plato.');
+        return;
+    }
+
+    const feedbackData = {
+      prediction_group_id: this.predictionGroupId,
+      observed_sales: cleanObservedSales
+    };
+
+    console.log('Enviando feedback:', feedbackData);
+
+    this.apiService.sendFeedback(feedbackData).subscribe(
+      () => {
+        this.feedbackGiven = true; // Oculta el formulario y muestra el mensaje de gracias
+        alert('¡Gracias! Tu feedback ha sido enviado con éxito.');
+      },
+      (error) => {
+        console.error('Error al enviar el feedback:', error);
+        alert('Hubo un error al enviar tu feedback.');
       }
     );
   }
