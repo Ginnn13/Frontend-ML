@@ -1,5 +1,3 @@
-// src/app/app.component.ts
-
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +12,6 @@ import { ApiService } from './api.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  // --- Propiedades existentes ---
   title = 'PredictionRestaurantBere';
   climaOptions = ['Soleado', 'Lluvioso', 'Ventoso', 'Nublado'];
   diaOptions = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
@@ -24,21 +21,16 @@ export class AppComponent {
   nombreDia: string = '';
   imgPath = 'https://iili.io/3Q4dEDG.png';
   
-  // --- PROPIEDADES NUEVAS Y ACTUALIZADAS ---
-  // Usamos un tipo más específico para evitar errores de compilación con keyvalue
   predictions: { [key: string]: any } | null = null; 
   predictionGroupId: string | null = null; // Guardará el ID del grupo para el feedback
-  feedbackGiven = false; // Controla si se muestra el form de feedback o el mensaje de gracias
-  // Este objeto guardará las cantidades reales que el usuario introduce
+  feedbackGiven = false; 
   observedSales: { [key: string]: number | null } = {};
-
-  // Mapeo de días en español a formato del backend
+ 
   private diaMapping: { [key: string]: string } = {
     'Lunes': 'monday', 'Martes': 'tuesday', 'Miércoles': 'wednesday',
     'Jueves': 'thursday', 'Viernes': 'friday', 'Sábado': 'saturday', 'Domingo': 'sunday'
   };
-
-  // Mapeo de clima a formato del backend
+ 
   private climaMapping: { [key: string]: string } = {
     'Soleado': 'sunny', 'Lluvioso': 'rainy', 'Ventoso': 'windy', 'Nublado': 'cloudy'
   };
@@ -71,7 +63,7 @@ export class AppComponent {
         // Guardamos el ID del grupo que viene del backend
         this.predictionGroupId = response.prediction_group_id; 
         this.observedSales = {}; // Limpiamos las ventas observadas anteriores
-        this.feedbackGiven = false; // Mostramos el formulario de feedback de nuevo
+        this.feedbackGiven = false;
       },
       (error) => {
         console.error('Error al obtener predicciones:', error);
@@ -80,18 +72,15 @@ export class AppComponent {
     );
   }
 
-  // ---- NUEVA FUNCIÓN PARA ENVIAR EL FEEDBACK ----
   submitFeedback() {
     if (!this.predictionGroupId) {
       alert('No hay un ID de predicción para enviar el feedback.');
       return;
     }
 
-    // Limpiar el objeto de ventas: solo enviar los platos que el usuario rellenó
     const cleanObservedSales: { [key: string]: number } = {};
     for (const plato in this.observedSales) {
       const cantidad = this.observedSales[plato];
-      // Solo incluimos si el usuario ha introducido un número (no es nulo ni indefinido)
       if (cantidad !== null && cantidad !== undefined) {
         cleanObservedSales[plato] = Number(cantidad);
       }
@@ -111,7 +100,7 @@ export class AppComponent {
 
     this.apiService.sendFeedback(feedbackData).subscribe(
       () => {
-        this.feedbackGiven = true; // Oculta el formulario y muestra el mensaje de gracias
+        this.feedbackGiven = true;
         alert('¡Gracias! Tu feedback ha sido enviado con éxito.');
       },
       (error) => {

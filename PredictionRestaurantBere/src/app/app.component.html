@@ -1,6 +1,5 @@
 <router-outlet></router-outlet>
-<div class="container-fluid p-0">
-  <!-- Cabecera (sin cambios) -->
+<div class="container-fluid p-0"> 
   <div class="position-relative text-center">
     <img [src]="imgPath" alt="Cabecera" class="img-fluid w-100" style="height: 350px; object-fit: cover;">
     <div class="position-absolute top-50 start-50 translate-middle">
@@ -12,14 +11,12 @@
 
   <div class="container my-5">
     <h2 class="text-center mb-4">Predicción de Platos</h2>
-
-    <!-- Formulario de Predicción (sin cambios) -->
+ 
     <div class="row justify-content-center">
       <div class="col-md-6">
         <div class="card shadow">
           <div class="card-body">
-            <form (ngSubmit)="onSubmit()">
-              <!-- Inputs del formulario (sin cambios) -->
+            <form (ngSubmit)="onSubmit()"> 
               <div class="mb-3">
                 <label for="clima" class="form-label">Clima:</label>
                 <select id="clima" [(ngModel)]="clima" name="clima" class="form-select" required>
@@ -47,17 +44,14 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> 
 
-    <!-- Sección de Resultados (aparece después de predecir) -->
-    <div *ngIf="predictions" class="mt-5">
-      <!-- Lista de Predicciones -->
+    <div *ngIf="predictions" class="mt-5"> 
       <h3 class="text-center mb-3">Predicciones:</h3>
       <div class="row justify-content-center">
         <div class="col-md-6">
           <ul class="list-group">
-            <ng-container *ngFor="let item of predictions | keyvalue : keepOriginalOrder">
-              <!-- Filtramos para no mostrar el ID del grupo en la lista de predicciones -->
+            <ng-container *ngFor="let item of predictions | keyvalue : keepOriginalOrder"> 
               <li *ngIf="item.key !== 'prediction_group_id'" class="list-group-item d-flex justify-content-between align-items-center" [class.bg-info]="item.key === 'total_platos'">
                 <strong>{{ item.key }}:</strong>
                 <span class="badge bg-primary rounded-pill">{{ item.value }}</span>
@@ -66,12 +60,7 @@
           </ul>
         </div>
       </div>
-
-      <!-- ===================================================== -->
-      <!-- ===== INICIO DE LA NUEVA SECCIÓN DE FEEDBACK      ===== -->
-      <!-- ===================================================== -->
-
-      <!-- Formulario de Feedback (se muestra si 'feedbackGiven' es false) -->
+ 
       <div *ngIf="!feedbackGiven" class="row justify-content-center mt-4">
         <div class="col-md-6">
           <div class="card shadow-sm">
@@ -81,8 +70,7 @@
             <div class="card-body">
               <p class="text-center">Introduce la cantidad real vendida para cada plato.</p>
               <form (ngSubmit)="submitFeedback()">
-                <ng-container *ngFor="let item of predictions | keyvalue : keepOriginalOrder">
-                  <!-- Solo creamos inputs para los platos, no para el total ni el ID -->
+                <ng-container *ngFor="let item of predictions | keyvalue : keepOriginalOrder"> 
                   <div *ngIf="item.key !== 'total_platos' && item.key !== 'prediction_group_id'" class="mb-2">
                     <label [for]="item.key" class="form-label">{{ item.key }}</label>
                     <input type="number" class="form-control" [id]="item.key" min="0" placeholder="Cantidad real vendida" [(ngModel)]="observedSales[item.key]" [name]="item.key">
@@ -94,20 +82,14 @@
           </div>
         </div>
       </div>
-
-      <!-- Mensaje de Agradecimiento (se muestra si 'feedbackGiven' es true) -->
+ 
       <div *ngIf="feedbackGiven" class="row justify-content-center mt-4">
         <div class="col-md-6">
           <div class="alert alert-success text-center">
             <strong>¡Gracias!</strong> Tus datos ayudarán a mejorar futuras predicciones.
           </div>
         </div>
-      </div>
-
-      <!-- ===================================================== -->
-      <!-- ===== FIN DE LA NUEVA SECCIÓN DE FEEDBACK        ===== -->
-      <!-- ===================================================== -->
-
+      </div> 
     </div>
   </div>
 </div>
